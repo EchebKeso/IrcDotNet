@@ -424,20 +424,20 @@ namespace IrcDotNet
                 this.users.Remove(channelUser);
         }
 
-        internal void HandleMessageReceived(IIrcMessageSource source, IList<IIrcMessageTarget> targets, string text)
+        internal void HandleMessageReceived(IIrcMessageSource source, IList<IIrcMessageTarget> targets, string text, IDictionary<string, string> tags)
         {
-            var previewEventArgs = new IrcPreviewMessageEventArgs(source, targets, text, this.Client.TextEncoding);
+            var previewEventArgs = new IrcPreviewMessageEventArgs(source, targets, text, this.Client.TextEncoding, tags);
             OnPreviewMessageReceived(previewEventArgs);
             if (!previewEventArgs.Handled)
-                OnMessageReceived(new IrcMessageEventArgs(source, targets, text, this.Client.TextEncoding));
+                OnMessageReceived(new IrcMessageEventArgs(source, targets, text, this.Client.TextEncoding, tags));
         }
 
-        internal void HandleNoticeReceived(IIrcMessageSource source, IList<IIrcMessageTarget> targets, string text)
+        internal void HandleNoticeReceived(IIrcMessageSource source, IList<IIrcMessageTarget> targets, string text, IDictionary<string, string> tags)
         {
-            var previewEventArgs = new IrcPreviewMessageEventArgs(source, targets, text, this.Client.TextEncoding);
+            var previewEventArgs = new IrcPreviewMessageEventArgs(source, targets, text, this.Client.TextEncoding, tags);
             OnPreviewNoticeReceived(previewEventArgs);
             if (!previewEventArgs.Handled)
-                OnNoticeReceived(new IrcMessageEventArgs(source, targets, text, this.Client.TextEncoding));
+                OnNoticeReceived(new IrcMessageEventArgs(source, targets, text, this.Client.TextEncoding, tags));
         }
 
         /// <summary>
@@ -593,15 +593,15 @@ namespace IrcDotNet
         #region IIrcMessageReceiveHandler Members
 
         void IIrcMessageReceiveHandler.HandleMessageReceived(IIrcMessageSource source, IList<IIrcMessageTarget> targets,
-            string text)
+            string text, IDictionary<string, string> tags)
         {
-            HandleMessageReceived(source, targets, text);
+            HandleMessageReceived(source, targets, text, tags);
         }
 
         void IIrcMessageReceiveHandler.HandleNoticeReceived(IIrcMessageSource source, IList<IIrcMessageTarget> targets,
             string text)
         {
-            HandleNoticeReceived(source, targets, text);
+            HandleNoticeReceived(source, targets, text, null);
         }
 
         #endregion

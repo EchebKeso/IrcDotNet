@@ -1597,6 +1597,26 @@ namespace IrcDotNet
         {
             string prefix = null;
             string lineAfterPrefix = null;
+            Dictionary<string, string> tags = null;
+
+            // If this is an IRCv3 messages with tags (line prefix = @), extract tags.
+            // http://ircv3.net/specs/core/message-tags-3.2.html
+            if (line[0] == '@')
+            {
+                tags = new Dictionary<string, string>();
+                int tagColonIndex = line.IndexOf(" :");
+
+                string tagsRaw = line.Substring(1, tagColonIndex-1);
+                line = line.Substring(tagColonIndex+1);
+
+                var tagsList = tagsRaw.Split(';').ToArray();
+                
+                foreach(var aTag in tagsList)
+                {
+                    var splitTag = aTag.SplitIntoPair("=");
+                    tags.Add(splitTag.Item1, splitTag.Item2);
+                }                
+            }
 
             // Extract prefix from message line, if it contains one.
             if (line[0] == ':')
@@ -1642,7 +1662,7 @@ namespace IrcDotNet
             }
 
             // Parse received IRC message.
-            var message = new IrcMessage(this, prefix, command, parameters);
+            var message = new IrcMessage(this, prefix, command, parameters, tags);
             var messageReceivedEventArgs = new IrcRawMessageEventArgs(message, line);
             OnRawMessageReceived(messageReceivedEventArgs);
             ReadMessage(message, line);
@@ -2037,6 +2057,11 @@ namespace IrcDotNet
             public IList<string> Parameters;
 
             /// <summary>
+            /// A collection of tags attributed to the message.
+            /// </summary>
+            public IDictionary<string, string> tags;
+
+            /// <summary>
             /// Initializes a new instance of the <see cref="IrcMessage"/> structure.
             /// </summary>
             /// <param name="client">A client object that has sent/will receive the message.</param>
@@ -2049,6 +2074,25 @@ namespace IrcDotNet
                 this.Prefix = prefix;
                 this.Command = command;
                 this.Parameters = parameters;
+                this.tags = null;
+
+                this.Source = client.GetSourceFromPrefix(prefix);
+            }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="IrcMessage"/> structure, including IRCv3 tags.
+            /// </summary>
+            /// <param name="client"></param>
+            /// <param name="prefix"></param>
+            /// <param name="command"></param>
+            /// <param name="parameters"></param>
+            /// <param name="tags"></param>
+            public IrcMessage(IrcClient client, string prefix, string command, IList<string> parameters, IDictionary<string, string> tags)
+            {
+                this.Prefix = prefix;
+                this.Command = command;
+                this.Parameters = parameters;
+                this.tags = tags;
 
                 this.Source = client.GetSourceFromPrefix(prefix);
             }

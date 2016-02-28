@@ -227,8 +227,8 @@ namespace IrcDotNet
     {
         /// <inheritdoc/>
         public IrcPreviewMessageEventArgs(IIrcMessageSource source, IList<IIrcMessageTarget> targets, string text,
-            Encoding encoding)
-            : base(source, targets, text, encoding)
+            Encoding encoding, IDictionary<string, string> tags)
+            : base(source, targets, text, encoding, tags)
         {
             this.Handled = false;
         }
@@ -261,7 +261,7 @@ namespace IrcDotNet
         /// <exception cref="ArgumentNullException"><paramref name="targets"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="text"/> is <see langword="null"/>.</exception>
         public IrcMessageEventArgs(IIrcMessageSource source, IList<IIrcMessageTarget> targets, string text,
-            Encoding encoding)
+            Encoding encoding, IDictionary<string, string> tags)
             : base()
         {
             if (targets == null)
@@ -275,6 +275,7 @@ namespace IrcDotNet
             this.Targets = new ReadOnlyCollection<IIrcMessageTarget>(targets);
             this.Text = text;
             this.Encoding = encoding;
+            this.Tags = tags;
         }
 
         /// <summary>
@@ -323,6 +324,15 @@ namespace IrcDotNet
         /// </summary>
         /// <value>The encoding of the message text.</value>
         public Encoding Encoding
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// The IRCv3 tags attached to this message.
+        /// </summary>
+        public IDictionary<string, string> Tags
         {
             get;
             private set;

@@ -360,28 +360,28 @@ namespace IrcDotNet
 
         internal void HandleMessageSent(IList<IIrcMessageTarget> targets, string text)
         {
-            OnMessageSent(new IrcMessageEventArgs(this, targets, text, this.Client.TextEncoding));
+            OnMessageSent(new IrcMessageEventArgs(this, targets, text, this.Client.TextEncoding, null));
         }
 
         internal void HandleNoticeSent(IList<IIrcMessageTarget> targets, string text)
         {
-            OnNoticeSent(new IrcMessageEventArgs(this, targets, text, this.Client.TextEncoding));
+            OnNoticeSent(new IrcMessageEventArgs(this, targets, text, this.Client.TextEncoding, null));
         }
 
         internal void HandleMessageReceived(IIrcMessageSource source, IList<IIrcMessageTarget> targets, string text)
         {
-            var previewEventArgs = new IrcPreviewMessageEventArgs(source, targets, text, this.Client.TextEncoding);
+            var previewEventArgs = new IrcPreviewMessageEventArgs(source, targets, text, this.Client.TextEncoding, null);
             OnPreviewMessageReceived(previewEventArgs);
             if (!previewEventArgs.Handled)
-                OnMessageReceived(new IrcMessageEventArgs(source, targets, text, this.Client.TextEncoding));
+                OnMessageReceived(new IrcMessageEventArgs(source, targets, text, this.Client.TextEncoding, null));
         }
 
         internal void HandleNoticeReceived(IIrcMessageSource source, IList<IIrcMessageTarget> targets, string text)
         {
-            var previewEventArgs = new IrcPreviewMessageEventArgs(source, targets, text, this.Client.TextEncoding);
+            var previewEventArgs = new IrcPreviewMessageEventArgs(source, targets, text, this.Client.TextEncoding, null);
             OnPreviewNoticeReceived(previewEventArgs);
             if (!previewEventArgs.Handled)
-                OnNoticeReceived(new IrcMessageEventArgs(source, targets, text, this.Client.TextEncoding));
+                OnNoticeReceived(new IrcMessageEventArgs(source, targets, text, this.Client.TextEncoding, null));
         }
 
         /// <summary>
@@ -500,7 +500,7 @@ namespace IrcDotNet
         #region IIrcMessageReceiveHandler Members
 
         void IIrcMessageReceiveHandler.HandleMessageReceived(IIrcMessageSource source, IList<IIrcMessageTarget> targets,
-            string text)
+            string text, IDictionary<string, string> tags)
         {
             HandleMessageReceived(source, targets, text);
         }

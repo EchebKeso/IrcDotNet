@@ -12,7 +12,7 @@ namespace IrcDotNet
     {
         protected override void WriteMessage(string message, object token = null)
         {
-            base.WriteMessage(message, token ?? new IrcRawMessageEventArgs(new IrcMessage(this, null, null, null), message));
+            base.WriteMessage(message, token ?? new IrcRawMessageEventArgs(new IrcMessage(this, null, null, null, null), message));
         }
 
         protected override void OnChannelModeChanged(IrcChannel channel, IrcUser source, string newModes, IEnumerable<string> newModeParameters) { 

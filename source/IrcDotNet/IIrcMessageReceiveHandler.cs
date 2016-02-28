@@ -16,7 +16,7 @@ namespace IrcDotNet
         /// <param name="source">The source of the message.</param>
         /// <param name="targets">A collection of the target of the message.</param>
         /// <param name="text">The text of the message.</param>
-        void HandleMessageReceived(IIrcMessageSource source, IList<IIrcMessageTarget> targets, string text);
+        void HandleMessageReceived(IIrcMessageSource source, IList<IIrcMessageTarget> targets, string text, IDictionary<string,string> tags);
 
         /// <summary>
         /// Handles the specified notice that was received by the client.

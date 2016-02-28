@@ -217,7 +217,7 @@ namespace IrcDotNet
             {
                 Debug.Assert(curTarget != null);
                 var messageHandler = (curTarget as IIrcMessageReceiveHandler) ?? this.localUser;
-                messageHandler.HandleMessageReceived(message.Source, targets, text);
+                messageHandler.HandleMessageReceived(message.Source, targets, text, message.tags);
             }
         }
 
